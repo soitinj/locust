@@ -23,7 +23,7 @@ import gevent
 from charset_normalizer import detect
 from gevent.timeout import Timeout
 from geventhttpclient._parser import HTTPParseError
-from geventhttpclient.client import HTTPClientPool
+from geventhttpclient.client import HTTPClient, HTTPClientPool
 from geventhttpclient.header import Headers
 from geventhttpclient.response import HTTPConnectionClosed, HTTPSocketPoolResponse
 from geventhttpclient.useragent import CompatRequest, CompatResponse, ConnectionError, UserAgent
@@ -164,10 +164,12 @@ class FastHttpSession:
             if hasattr(e, "response"):
                 r = e.response
             else:
+                req_headers = HTTPClient.DEFAULT_HEADERS.copy()
+                req_headers.update(kwargs.get("headers"))
                 req = self.client._make_request(
                     url,
                     method=method,
-                    headers=kwargs.get("headers"),
+                    headers=req_headers,
                     payload=kwargs.get("payload"),
                     params=kwargs.get("params"),
                 )
