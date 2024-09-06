@@ -165,7 +165,8 @@ class FastHttpSession:
                 r = e.response
             else:
                 req_headers = HTTPClient.DEFAULT_HEADERS.copy()
-                req_headers.update(kwargs.get("headers"))
+                if given_headers := kwargs.get("headers"):
+                    req_headers.update(given_headers)
                 req = self.client._make_request(
                     url,
                     method=method,
